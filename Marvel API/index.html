@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+
+    <title>Data Example</title>
+    <style>
+      img {
+        width: 150px;
+      }
+      .navbar-custom {
+        background-color: #000000;
+      }
+      .content-container {
+        margin-top: 20px;
+      }
+      body {
+        background-color: #ff3737;
+      }
+      .card-custom {
+        background-color: #f2f2f2;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="#">Marvel</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Characters</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Comics</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Series</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container content-container">
+      <div id="characterDetails" class="row"></div>
+    </div>
+
+    <script>
+      var url =
+        "https://gateway.marvel.com/v1/public/characters?ts=1&apikey=dc6f0244db163ed561dc9ca202d00c59&hash=ff92df978fd93edd7a6ba1dec72d9ddd";
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          var characters = data.data.results;
+
+          var characterDetails = document.getElementById("characterDetails");
+          characters.forEach((character) => {
+            var characterDiv = document.createElement("div");
+            characterDiv.className = "col-md-4"; // Tambahkan kelas kolom Bootstrap
+            characterDiv.innerHTML = `
+                        <div class="card card-custom">
+                            <img src="${character.thumbnail.path}.${
+              character.thumbnail.extension
+            }" class="card-img-top" alt="Character Image">
+                            <div class="card-body">
+                                <h5 class="card-title">${character.name}</h5>
+                                <p class="card-text">${
+                                  character.description
+                                }</p>
+                                <h6 class="card-subtitle">Comics:</h6>
+                                <ul class="card-text">
+                                    ${character.comics.items
+                                      .map((comic) => `<li>${comic.name}</li>`)
+                                      .join("")}
+                                </ul>
+                                <h6 class="card-subtitle">Series:</h6>
+                                <ul class="card-text">
+                                    ${character.series.items
+                                      .map(
+                                        (series) => `<li>${series.name}</li>`
+                                      )
+                                      .join("")}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+            characterDetails.appendChild(characterDiv);
+          });
+        })
+        .catch((error) => console.log(error));
+    </script>
+  </body>
+</html>
